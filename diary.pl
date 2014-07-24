@@ -22,9 +22,11 @@ use DateTime;
 # read the arguments
 my %start;
 my %end;
+my $templateFile;
 GetOptions (
   "start=s"=>\$start{input},
   "end=s"=>\$end{input},
+  "template=s"=>\$templateFile,
 );
 
 # check the start date, if given
@@ -66,7 +68,7 @@ if(defined $end{input}){
     $end{day} = ($end{day}<10) ? "0".$end{day} : $end{day};
     $end{month} = ($end{month}<10) ? "0".$end{month} : $end{month};
 } else { 
-    # tomorrow's date
+    # tomorrow's date - default if $end{input} is not given
     ($end{day}, $end{month}, $end{year}) = (localtime(time+86400))[3..5];
     $end{year} += 1900;
     $end{month} += 1;
@@ -81,25 +83,53 @@ if(defined $end{input}){
 # all the checks have been done, so the $endDate can be formed
 $end{print} = $end{DayName}." ".$end{year}."-".$end{month}."-".$end{day};
 
+# check to see if dates make sense (start needs to be before end)
+if ($start{date}>$end{date}){
+  print "Your start date is after your end date: exiting \n";
+  exit 0;
+}
+
+# XML parsing starts here
+my $filename = (defined $templateFile) ? $templateFile : 'blank-day-template.txt';
+my $parser = XML::LibXML->new();
+my $doc = $parser->parse_file($filename);
+
 print "start = ",$start{print},"\n";
 print "end = ",$end{print},"\n";
 print "start = ",$start{date},"\n";
 print "end = ",$end{date},"\n";
 
-my $filename = 'blank-day-template.txt';
-# my $filename = 'library.xml';
+# need a variable for XML replacement
+my $node;
+while($start{date}<=$end{date}){
+    (my $tmp=$start{date}) =~ s/T.*//;
+    # change the date
+    ($node) = $doc->findnodes('/day/date');
+    $node->removeChildNodes();
+    $node->appendText($tmp);
 
-my $parser = XML::LibXML->new();
-my $doc    = $parser->parse_file($filename);
+    # change the day
+    ($node) = $doc->findnodes('/day/day-number');
+    $node->removeChildNodes();
+    $node->appendText($start{date}->day);
+    
+    # change the day-name
+    ($node) = $doc->findnodes('/day/day-name');
+    $node->removeChildNodes();
+    $node->appendText($start{date}->day_name());
 
-my ($node) = $doc->findnodes('/day/date');
-$node->removeChildNodes();
-$node->appendText('394');
+    # change the month-name
+    ($node) = $doc->findnodes('/day/month-name');
+    $node->removeChildNodes();
+    $node->appendText($start{date}->month_name());
 
-($node) = $doc->findnodes('/day/day-name');
-$node->removeChildNodes();
-$node->appendText('cmh is king!');
-
-print $doc->toString();
+    # change the year
+    ($node) = $doc->findnodes('/day/year');
+    $node->removeChildNodes();
+    $node->appendText($start{date}->year());
+    
+    print $doc->toString();
+    $start{date}->add(days=>1);
+}
 
 exit;
