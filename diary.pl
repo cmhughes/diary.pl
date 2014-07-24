@@ -21,10 +21,10 @@ use DateTime;
 
 # read the arguments
 my %start;
-my $endDate;
+my %end;
 GetOptions (
   "start=s"=>\$start{input},
-  "end=s"=>\$endDate,
+  "end=s"=>\$end{input},
 );
 
 # today's date
@@ -40,20 +40,20 @@ $start{day} = ($start{day}<10) ? "0".$start{day} : $start{day};
 $start{month} = ($start{month}<10) ? "0".$start{month} : $start{month};
 
 # tomorrow's date
-my ($day, $month, $year) = (localtime(time+86400))[3..5];
-$year += 1900;
-$month += 1;
+($end{day}, $end{month}, $end{year}) = (localtime(time+86400))[3..5];
+$end{year} += 1900;
+$end{month} += 1;
 
-$dt = DateTime->new(year => $year, month => $month, day => $day);
-my $endDayName = $dt->day_name;
+$dt = DateTime->new(year => $end{year}, month => $end{month}, day => $end{day});
+$end{DayName} = $dt->day_name;
 
 # fix the day and month to include a 0
-my $endDay = ($day<10) ? "0".$day : $day;
-my $endMonth = ($month<10) ? "0".$month : $month;
+$end{day} = ($end{day}<10) ? "0".$end{day} : $end{day};
+$end{month} = ($end{month}<10) ? "0".$end{month} : $end{month};
 
 # check the start date, if given
 if(defined $start{input}){
-    ($year,$month,$day) = split(/-/,$start{input});
+    my ($year,$month,$day) = split(/-/,$start{input});
     # validate the start date - this will exit if there's an error
     $dt = DateTime->new(year => $year, month => $month, day => $day);
     # remove leading zeros, which stops things like 0003
@@ -61,30 +61,30 @@ if(defined $start{input}){
     $month =~ s/^0+//;
     $start{day} = ($day<10) ? "0".$day : $day;
     $start{month} = ($month<10) ? "0".$month : $month;
+    $start{year} = $year;
 } 
 
 # all the checks have been done, so the $startDate can be formed
-$start{date} = $start{DayName}." ".$year."-".$start{month}."-".$start{day};
+$start{date} = $start{DayName}." ".$start{year}."-".$start{month}."-".$start{day};
 
 # check the end date, if given
-if(defined $endDate){
-    ($year,$month,$day) = split(/-/,$endDate);
+if(defined $end{input}){
+    my ($year,$month,$day) = split(/-/,$end{input});
     # validate the end date - this will exit if there's an error
     $dt = DateTime->new(year => $year, month => $month, day => $day);
     # remove leading zeros, which stops things like 0003
     $day =~ s/^0+//;
     $month =~ s/^0+//;
-    $endDay = ($day<10) ? "0".$day : $day;
-    $endMonth = ($month<10) ? "0".$month : $month;
+    $end{day} = ($day<10) ? "0".$day : $day;
+    $end{month} = ($month<10) ? "0".$month : $month;
+    $end{year} = $year;
 } 
 
 # all the checks have been done, so the $endDate can be formed
-$endDate = $endDayName." ".$year."-".$endMonth."-".$endDay;
-
-#$endDate = (defined $endDate) ? $endDate : $endDayName." ".$year."-".$endMonth."-".$endDay;
+$end{date} = $end{DayName}." ".$end{year}."-".$end{month}."-".$end{day};
 
 print "start = ",$start{date},"\n";
-print "end = ",$endDate,"\n";
+print "end = ",$end{date},"\n";
 
 my $filename = 'blank-day-template.txt';
 # my $filename = 'library.xml';
