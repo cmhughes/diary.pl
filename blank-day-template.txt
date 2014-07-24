@@ -1,0 +1,25 @@
+<day>
+    <date>
+    </date>
+    <day-name>
+    </day-name>
+    <day-number></day-number>
+    <month-name></month-name>
+    <year>
+    </year>
+    <summary>
+    </summary>
+    <objectives>
+    </objectives>
+    <training>
+        <weight>
+        </weight>
+    </training>
+    <food>
+        <dqs>
+        </dqs>
+    </food>
+    <reflection>
+    </reflection>
+</day>
+

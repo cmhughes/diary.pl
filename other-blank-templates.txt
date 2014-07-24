@@ -1,0 +1,4 @@
+<multi-day>
+<multi-day-title></multi-day-title>
+<multi-day-length></multi-day-length>
+</multi-day>
