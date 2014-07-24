@@ -20,27 +20,27 @@ use Getopt::Long;   # to get the switches/options/flags
 use DateTime;
 
 # read the arguments
-my $startDate;
+my %start;
 my $endDate;
 GetOptions (
-  "start=s"=>\$startDate,
+  "start=s"=>\$start{input},
   "end=s"=>\$endDate,
 );
 
 # today's date
-my ($day, $month, $year) = (localtime)[3..5];
-$year += 1900;
-$month += 1;
+($start{day}, $start{month}, $start{year}) = (localtime)[3..5];
+$start{year} += 1900;
+$start{month} += 1;
 
-my $dt = DateTime->new(year => $year, month => $month, day => $day);
-my $startDayName = $dt->day_name;
+my $dt = DateTime->new(year => $start{year}, month => $start{month}, day => $start{day});
+$start{DayName} = $dt->day_name;
 
 # fix the day and month to include a 0
-my $startDay = ($day<10) ? "0".$day : $day;
-my $startMonth = ($month<10) ? "0".$month : $month;
+$start{day} = ($start{day}<10) ? "0".$start{day} : $start{day};
+$start{month} = ($start{month}<10) ? "0".$start{month} : $start{month};
 
 # tomorrow's date
-($day, $month, $year) = (localtime(time+86400))[3..5];
+my ($day, $month, $year) = (localtime(time+86400))[3..5];
 $year += 1900;
 $month += 1;
 
@@ -52,19 +52,19 @@ my $endDay = ($day<10) ? "0".$day : $day;
 my $endMonth = ($month<10) ? "0".$month : $month;
 
 # check the start date, if given
-if(defined $startDate){
-    ($year,$month,$day) = split(/-/,$startDate);
+if(defined $start{input}){
+    ($year,$month,$day) = split(/-/,$start{input});
     # validate the start date - this will exit if there's an error
     $dt = DateTime->new(year => $year, month => $month, day => $day);
     # remove leading zeros, which stops things like 0003
     $day =~ s/^0+//;
     $month =~ s/^0+//;
-    $startDay = ($day<10) ? "0".$day : $day;
-    $startMonth = ($month<10) ? "0".$month : $month;
+    $start{day} = ($day<10) ? "0".$day : $day;
+    $start{month} = ($month<10) ? "0".$month : $month;
 } 
 
 # all the checks have been done, so the $startDate can be formed
-$startDate = $startDayName." ".$year."-".$startMonth."-".$startDay;
+$start{date} = $start{DayName}." ".$year."-".$start{month}."-".$start{day};
 
 # check the end date, if given
 if(defined $endDate){
@@ -83,7 +83,7 @@ $endDate = $endDayName." ".$year."-".$endMonth."-".$endDay;
 
 #$endDate = (defined $endDate) ? $endDate : $endDayName." ".$year."-".$endMonth."-".$endDay;
 
-print "start = ",$startDate,"\n";
+print "start = ",$start{date},"\n";
 print "end = ",$endDate,"\n";
 
 my $filename = 'blank-day-template.txt';
@@ -101,3 +101,5 @@ $node->removeChildNodes();
 $node->appendText('cmh is king!');
 
 print $doc->toString();
+
+exit;
