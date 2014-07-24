@@ -27,62 +27,62 @@ GetOptions (
   "end=s"=>\$end{input},
 );
 
-# today's date
-($start{day}, $start{month}, $start{year}) = (localtime)[3..5];
-$start{year} += 1900;
-$start{month} += 1;
-
-my $dt = DateTime->new(year => $start{year}, month => $start{month}, day => $start{day});
-$start{DayName} = $dt->day_name;
-
-# fix the day and month to include a 0
-$start{day} = ($start{day}<10) ? "0".$start{day} : $start{day};
-$start{month} = ($start{month}<10) ? "0".$start{month} : $start{month};
-
-# tomorrow's date
-($end{day}, $end{month}, $end{year}) = (localtime(time+86400))[3..5];
-$end{year} += 1900;
-$end{month} += 1;
-
-$dt = DateTime->new(year => $end{year}, month => $end{month}, day => $end{day});
-$end{DayName} = $dt->day_name;
-
-# fix the day and month to include a 0
-$end{day} = ($end{day}<10) ? "0".$end{day} : $end{day};
-$end{month} = ($end{month}<10) ? "0".$end{month} : $end{month};
-
 # check the start date, if given
 if(defined $start{input}){
-    my ($year,$month,$day) = split(/-/,$start{input});
+    ($start{year},$start{month},$start{day}) = split(/-/,$start{input});
     # validate the start date - this will exit if there's an error
-    $dt = DateTime->new(year => $year, month => $month, day => $day);
+    $start{date} = DateTime->new(year => $start{year}, month => $start{month}, day => $start{day});
+    $start{DayName} = $start{date}->day_name;
     # remove leading zeros, which stops things like 0003
-    $day =~ s/^0+//;
-    $month =~ s/^0+//;
-    $start{day} = ($day<10) ? "0".$day : $day;
-    $start{month} = ($month<10) ? "0".$month : $month;
-    $start{year} = $year;
-} 
+    $start{day} =~ s/^0+//;
+    $start{month} =~ s/^0+//;
+    $start{day} = ($start{day}<10) ? "0".$start{day} : $start{day};
+    $start{month} = ($start{month}<10) ? "0".$start{month} : $start{month};
+} else {
+    # today's date - default if $start{input} is not given
+    ($start{day}, $start{month}, $start{year}) = (localtime)[3..5];
+    $start{year} += 1900;
+    $start{month} += 1;
+    $start{date} = DateTime->new(year => $start{year}, month => $start{month}, day => $start{day});
+    $start{DayName} = $start{date}->day_name;
+    
+    # fix the day and month to include a 0
+    $start{day} = ($start{day}<10) ? "0".$start{day} : $start{day};
+    $start{month} = ($start{month}<10) ? "0".$start{month} : $start{month};
+}
 
 # all the checks have been done, so the $startDate can be formed
-$start{date} = $start{DayName}." ".$start{year}."-".$start{month}."-".$start{day};
+$start{print} = $start{DayName}." ".$start{year}."-".$start{month}."-".$start{day};
 
 # check the end date, if given
 if(defined $end{input}){
-    my ($year,$month,$day) = split(/-/,$end{input});
+    ($end{year},$end{month},$end{day}) = split(/-/,$end{input});
     # validate the end date - this will exit if there's an error
-    $dt = DateTime->new(year => $year, month => $month, day => $day);
+    $end{date} = DateTime->new(year => $end{year}, month => $end{month}, day => $end{day});
+    $end{DayName} = $end{date}->day_name;
     # remove leading zeros, which stops things like 0003
-    $day =~ s/^0+//;
-    $month =~ s/^0+//;
-    $end{day} = ($day<10) ? "0".$day : $day;
-    $end{month} = ($month<10) ? "0".$month : $month;
-    $end{year} = $year;
-} 
+    $end{day} =~ s/^0+//;
+    $end{month} =~ s/^0+//;
+    $end{day} = ($end{day}<10) ? "0".$end{day} : $end{day};
+    $end{month} = ($end{month}<10) ? "0".$end{month} : $end{month};
+} else { 
+    # tomorrow's date
+    ($end{day}, $end{month}, $end{year}) = (localtime(time+86400))[3..5];
+    $end{year} += 1900;
+    $end{month} += 1;
+    $end{date} = DateTime->new(year => $end{year}, month => $end{month}, day => $end{day});
+    $end{DayName} = $end{date}->day_name;
+    
+    # fix the day and month to include a 0
+    $end{day} = ($end{day}<10) ? "0".$end{day} : $end{day};
+    $end{month} = ($end{month}<10) ? "0".$end{month} : $end{month};
+}
 
 # all the checks have been done, so the $endDate can be formed
-$end{date} = $end{DayName}." ".$end{year}."-".$end{month}."-".$end{day};
+$end{print} = $end{DayName}." ".$end{year}."-".$end{month}."-".$end{day};
 
+print "start = ",$start{print},"\n";
+print "end = ",$end{print},"\n";
 print "start = ",$start{date},"\n";
 print "end = ",$end{date},"\n";
 
