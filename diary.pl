@@ -9,7 +9,7 @@
 #   script will exit if the dates are not valid.
 #
 # USAGE
-#   diary.pl --start=yyyy-mm-dd --end=yyyy-mm-dd --template=<filename> --footer=<filename> --silent
+#   diary.pl --start=yyyy-mm-dd --end=yyyy-mm-dd --template=<filename> --footer=<filename> --month=yyyy-mm --silent
 #
 #   All of the flags are *optional*:
 #       --start=yyyy-mm-dd is the start date, given in ISO format
@@ -20,6 +20,8 @@
 #         default value is default: blank-day-template.txt
 #       --footer=<filename> is the name of the footer file
 #         default: other-blank-templates.txt
+#       --month=yyyy-mm is name of the complete month that should be output to the file
+#         default: none
 #       --silent 
 #         don't output any information to the terminal
 #
@@ -44,6 +46,12 @@
 #           diary.pl --start=2014-7-24 --end=2014-9-21
 #      will output to diary-2014-07-24-to-2014-09-21.xml
 #      as the script knows to add in the extra 0s
+#   5. Running
+#           diary.pl --month=2014-07
+#      will put start=2014-07-01 and end=2014-07-31 and
+#      consequently output to diary-2014-07-01-to-2014-07-31
+#
+# NOTE: --month will take priority over --start or --end
 #
 # REQUIRED PERL modules
 #   Need to install XML::LibXML which 
@@ -73,16 +81,27 @@ my %end;
 my $templateFile;
 my $footerFile;
 my $silentMode;
+my %month;
 GetOptions (
   "start=s"=>\$start{input},
   "end=s"=>\$end{input},
+  "month=s"=>\$month{input},
   "template=s"=>\$templateFile,
   "footer=s"=>\$footerFile,
   "silent"=>\$silentMode,
 );
 
 # check the start date, if given
-if(defined $start{input}){
+if(defined $start{input} or defined $month{input}){
+    # check to see if month has been passed in, e.g --month=2014-07 
+    # means to output the template for the whole month of July, 2014
+    if(defined $month{input}){
+        ($month{year},$month{month}) = split(/-/,$month{input});
+        # now set the start input, making 01 as the first day
+        $start{input} = join("-",$month{year},$month{month},"01");
+        # and make the end input the *last* day of the month
+        $end{input} = join("-",$month{year},$month{month},DateTime->last_day_of_month(year=>$month{year},month=>$month{month})->day);
+    }
     ($start{year},$start{month},$start{day}) = split(/-/,$start{input});
     
     # validate the start date - this will exit if there's an error
