@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="diary.xsl"?>
+
+<diary-2014-07-27-to-2014-07-28>
+
+<day>
+    <date>2014-07-27</date>
+    <day-name>Sunday</day-name>
+    <day-number>27</day-number>
+    <month-name>July</month-name>
+    <year>2014</year>
+    <summary>
+    </summary>
+    <objectives>
+    </objectives>
+    <training>
+        <weight>
+        </weight>
+    </training>
+    <food>
+        <dqs>
+        </dqs>
+    </food>
+    <reflection>
+    </reflection>
+</day>
+
+<day>
+    <date>2014-07-28</date>
+    <day-name>Monday</day-name>
+    <day-number>28</day-number>
+    <month-name>July</month-name>
+    <year>2014</year>
+    <summary>
+    </summary>
+    <objectives>
+    </objectives>
+    <training>
+        <weight>
+        </weight>
+    </training>
+    <food>
+        <dqs>
+        </dqs>
+    </food>
+    <reflection>
+    </reflection>
+</day>
+
+</diary-2014-07-27-to-2014-07-28>
+
+<!--
+<multi-day>
+<multi-day-title></multi-day-title>
+<multi-day-length></multi-day-length>
+</multi-day>
+-->

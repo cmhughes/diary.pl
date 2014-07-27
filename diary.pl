@@ -9,7 +9,7 @@
 #   script will exit if the dates are not valid.
 #
 # USAGE
-#   diary.pl --start=yyyy-mm-dd --end=yyyy-mm-dd --template=<filename> --footer=<filename>
+#   diary.pl --start=yyyy-mm-dd --end=yyyy-mm-dd --template=<filename> --footer=<filename> --silent
 #
 #   All of the flags are *optional*:
 #       --start=yyyy-mm-dd is the start date, given in ISO format
@@ -20,6 +20,8 @@
 #         default value is default: blank-day-template.txt
 #       --footer=<filename> is the name of the footer file
 #         default: other-blank-templates.txt
+#       --silent 
+#         don't output any information to the terminal
 #
 # SAMPLE USAGE
 #   You can either run
@@ -70,11 +72,13 @@ my %start;
 my %end;
 my $templateFile;
 my $footerFile;
+my $silentMode;
 GetOptions (
   "start=s"=>\$start{input},
   "end=s"=>\$end{input},
   "template=s"=>\$templateFile,
   "footer=s"=>\$footerFile,
+  "silent"=>\$silentMode,
 );
 
 # check the start date, if given
@@ -217,4 +221,14 @@ close(FOOTER);
 # last comment
 print $diaryfile "-->";
 close($diaryfile);
+
+# output information to terminal
+if(!$silentMode){
+    print <<ENDQUOTE
+Start date: $start{year}-$start{month}-$start{day}
+End date: $end{year}-$end{month}-$end{day}
+Output written to diary-$diary{tag}.xml
+ENDQUOTE
+;
+}
 exit;
