@@ -84,9 +84,10 @@ GetOptions (
 # check the start date, if given
 if(defined $start{input}){
     ($start{year},$start{month},$start{day}) = split(/-/,$start{input});
+    
     # validate the start date - this will exit if there's an error
     $start{date} = DateTime->new(year => $start{year}, month => $start{month}, day => $start{day});
-    $start{DayName} = $start{date}->day_name;
+
     # remove leading zeros, which stops things like 0003
     $start{day} =~ s/^0+//;
     $start{month} =~ s/^0+//;
@@ -98,22 +99,19 @@ if(defined $start{input}){
     $start{year} += 1900;
     $start{month} += 1;
     $start{date} = DateTime->new(year => $start{year}, month => $start{month}, day => $start{day});
-    $start{DayName} = $start{date}->day_name;
     
     # fix the day and month to include a 0
     $start{day} = ($start{day}<10) ? "0".$start{day} : $start{day};
     $start{month} = ($start{month}<10) ? "0".$start{month} : $start{month};
 }
 
-# all the checks have been done, so the $start{print} can be formed
-$start{print} = $start{DayName}." ".$start{year}."-".$start{month}."-".$start{day};
-
 # check the end date, if given
 if(defined $end{input}){
     ($end{year},$end{month},$end{day}) = split(/-/,$end{input});
+
     # validate the end date - this will exit if there's an error
     $end{date} = DateTime->new(year => $end{year}, month => $end{month}, day => $end{day});
-    $end{DayName} = $end{date}->day_name;
+
     # remove leading zeros, which stops things like 0003
     $end{day} =~ s/^0+//;
     $end{month} =~ s/^0+//;
@@ -125,15 +123,11 @@ if(defined $end{input}){
     $end{year} += 1900;
     $end{month} += 1;
     $end{date} = DateTime->new(year => $end{year}, month => $end{month}, day => $end{day});
-    $end{DayName} = $end{date}->day_name;
     
     # fix the day and month to include a 0
     $end{day} = ($end{day}<10) ? "0".$end{day} : $end{day};
     $end{month} = ($end{month}<10) ? "0".$end{month} : $end{month};
 }
-
-# all the checks have been done, so the $end{print} can be formed
-$end{print} = $end{DayName}." ".$end{year}."-".$end{month}."-".$end{day};
 
 # check to see if dates make sense (start needs to be before end)
 if ($start{date}>$end{date}){
